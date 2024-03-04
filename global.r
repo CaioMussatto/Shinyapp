@@ -2,9 +2,21 @@ list.of.packages <- c(
   "stringr", "tidyr", "dplyr", "readr", "enrichR", "shiny", "shinydashboard",
   "ComplexHeatmap", "ggplot2", "DT"
 )
-
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[, "Package"])]
-if (length(new.packages)) install.packages(new.packages)
+
+if (length(new.packages) > 0) {
+  for (package in new.packages) {
+    if (package == "ComplexHeatmap") {
+      if (!requireNamespace("BiocManager", quietly = TRUE)) {
+        install.packages("BiocManager")
+      }
+      BiocManager::install("ComplexHeatmap")
+    } else {
+      install.packages(package)
+    }
+  }
+}
+
 
 options(timeout = max(300, getOption("timeout")))
 
