@@ -54,7 +54,11 @@ server = function(input, output, session) {
       filter(str_detect(Human_Cancer, paste0("^", input$filter, collapse = "|")))
     tabela_result_filtered(tabela_filtered)  
   })
-  
+
+  observeEvent(input$gene_set, {
+    tabela_result_filtered(NULL)
+  }) 
+
   output$tabela <- DT::renderDT({
     if (!is.null(tabela_result_filtered())) {
       DT::datatable(tabela_result_filtered(), rownames = F, options = list(pageLength = 15))
