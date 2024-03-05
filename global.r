@@ -42,6 +42,12 @@ destfile3 <- "Model.csv"
 file4 <- "https://www.dropbox.com/scl/fi/pt0nykdnai9xeng6oc0ag/CIFS.txt?rlkey=i1yx4k18azz2mlrz8yk3qgplt&dl=1"
 destfile4 <- "CIFS.txt"
 
+file5 <- "https://www.dropbox.com/scl/fi/exe30jrinz4k8rpfjw6bp/Blood-Secreted.tsv?rlkey=9p7o94h51331oj0jpxon1tjv4&dl=1"
+destfile5 <- "Blood_secreted.tsv"
+
+file6 <- "https://www.dropbox.com/scl/fi/kmdju8vif7chy5k1u5rqo/Predicted-secreted-proteins.tsv?rlkey=lnig0ohioxjdfctep9r6gtmpr&dl=1"
+destfile6 <- "Predicted_proteins.tsv"
+
 baixar_arquivo <- function(url, destfile, timeout) {
   tryCatch(
     {
@@ -75,7 +81,19 @@ if (baixar_arquivo(file3, destfile3, timeout = 300)) {
 }
 
 if (baixar_arquivo(file4, destfile4, timeout = 300)) {
-  CIFS <- read.delim(destfile4, header = FALSE, col.names = "GENES")
+  CIFS <- read.delim(destfile4, header = FALSE, col.names = "Gene")
+} else {
+  stop("Falha ao baixar o arquivo")
+}
+
+if (baixar_arquivo(file5, destfile5, timeout = 300)) {
+  Blood_secreted <- read.delim(destfile5)
+} else {
+  stop("Falha ao baixar o arquivo")
+}
+
+if (baixar_arquivo(file6, destfile6, timeout = 300)) {
+  Predicted_proteins <- read.delim(destfile6)
 } else {
   stop("Falha ao baixar o arquivo")
 }
@@ -93,7 +111,9 @@ rm(vias_nomes)
 
 Genes <- list(
   "All" = "All",
-  "CIFS" = CIFS
+  "CIFS" = CIFS,
+  "Blood Protein" = Blood_secreted,
+  "Predicted secreted proteins" = Predicted_proteins
 )
 
 Morpheus <- function(y) {
@@ -140,7 +160,7 @@ cor_p_value <- function(dataframe, selected_cancer = NULL) {
 
   for (col_malignos in colnames(malignos)) {
     for (col_linhagens2 in colnames(linhagens2)) {
-      cor_test <- cor.test(malignos[[col_malignos]], linhagens2[[col_linhagens2]])
+      cor_test <- cor.test(malignos[[col_malignos]], linhagens2[[col_linhagens2]], method = "spearman")
 
       resultados <- rbind(
         resultados,

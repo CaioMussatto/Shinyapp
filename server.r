@@ -4,7 +4,7 @@ server = function(input, output, session) {
     req(input$human, input$cell)
     data <- lineplot[[input$human]][[input$cell]]
     if (input$gene_set != "All") {
-      selected_genes <- Genes[[input$gene_set]]$GENES
+      selected_genes <- Genes[[input$gene_set]]$Gene
       data <- data[which(rownames(data) %in% selected_genes), ]
     } else {
       data <- data
