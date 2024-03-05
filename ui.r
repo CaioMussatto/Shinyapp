@@ -19,13 +19,13 @@ ui <- dashboardPage(
       menuItem("Correlation Analisys", tabName = "data", icon = icon("database")),
       selectizeInput(
         inputId = "human",
-        label = "Please, select the Human cancer genes: ",
+        label = "Select Genes Associated with Human Cancer:",
         choices = names(lineplot),
         selected = "Lung"
       ),
       selectizeInput(
         inputId = "cell",
-        label = "Please, select the cell line dataset: ",
+        label = "Choose Cell Line Dataset:",
         choices = names(lineplot[[1]]),
         selected = "LUNG"
       ),
