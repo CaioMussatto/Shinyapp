@@ -139,44 +139,27 @@ Morpheus <- function(y) {
 }
 
 cor_p_value <- function(dataframe, selected_cancer = NULL) {
-  resultados <- data.frame(
-    Human_Cancer = character(),
-    Cell_lines = character(),
-    r_value = numeric(),
-    p_value = numeric(),
-    stringsAsFactors = FALSE
+  results <- data.frame(
+    Human_Cancer = character(), Cell_lines = character(),
+    r_value = numeric(), p_value = numeric(), stringsAsFactors = FALSE
   )
 
-  # Filtrando linhas com base nas escolhas do usuário
-  if (!is.null(selected_cancer)) {
-    malignos <- dataframe %>% select(ends_with("Malignant"), all_of(selected_cancer))
-  } else {
-    malignos <- dataframe %>% select(ends_with("Malignant"))
-  }
-
+  malignos <- dataframe %>% select(ends_with("Malignant"), all_of(selected_cancer))
   linhagens2 <- dataframe %>% select(-ends_with("Malignant"))
-  malignos <- mutate_all(malignos, function(x) as.numeric(as.character(x)))
-  linhagens2 <- mutate_all(linhagens2, function(x) as.numeric(as.character(x)))
 
   for (col_malignos in colnames(malignos)) {
     for (col_linhagens2 in colnames(linhagens2)) {
       cor_test <- cor.test(malignos[[col_malignos]], linhagens2[[col_linhagens2]], method = "spearman")
-
-      resultados <- rbind(
-        resultados,
-        data.frame(
-          Human_Cancer = col_malignos,
-          Cell_lines = col_linhagens2,
-          r_value = cor_test$estimate,
-          p_value = cor_test$p.value,
-          stringsAsFactors = FALSE
-        )
-      )
+      results <- rbind(results, data.frame(
+        Human_Cancer = col_malignos, Cell_lines = col_linhagens2,
+        r_value = cor_test$estimate, p_value = cor_test$p.value
+      ))
     }
   }
-  resultados <- resultados %>% arrange(desc(r_value))
+
+  results <- results %>% arrange(desc(r_value))
   gc()
-  return(resultados)
+  return(results)
 }
 
 pathways <- function(lista, user) {
